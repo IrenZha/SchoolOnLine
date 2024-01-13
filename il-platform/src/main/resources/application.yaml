@@ -1,0 +1,17 @@
+server:
+  port: 8080
+client:
+  avatars: http://127.0.0.1:8081/avatars
+  courses: http://127.0.0.1:8082/courses
+  users: http://127.0.0.1:8083/users
+  orders: http://127.0.0.1:8084/orders
+  payment: http://127.0.0.1:8085/payment
+  lessons: http://127.0.0.1:8086/lessons
+  feedbacks: http://127.0.0.1:8087/feedbacks
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 800MB
+      max-request-size: 800MB
