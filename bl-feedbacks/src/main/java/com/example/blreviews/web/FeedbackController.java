@@ -15,7 +15,7 @@ public class FeedbackController {
     private final FeedbackService service;
 
     @PostMapping
-    public FeedbackDto save(FeedbackDto feedbackDto) {
+    public FeedbackDto save(@RequestBody FeedbackDto feedbackDto) {
         return service.save(feedbackDto);
     }
 

@@ -105,6 +105,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void feedbackSave(FeedbackDto feedbackDto) {
+        feedbackClient.save(feedbackDto);
+    }
+
+    @Override
     public List<UserDto> teachers() {
         return userClient.getAllByRole("ROLE_TEACHER");
     }

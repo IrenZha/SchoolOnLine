@@ -33,5 +33,7 @@ public interface UserService {
 
     void feedbackUpdate(UUID feedbackId, FeedbackDto feedbackDto);
 
+    void feedbackSave(FeedbackDto feedbackDto);
+
     List<UserDto> teachers();
 }

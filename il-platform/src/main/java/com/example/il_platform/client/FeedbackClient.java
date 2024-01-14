@@ -10,7 +10,7 @@ import java.util.UUID;
 @FeignClient(name = "feedback-client", url = "${client.feedbacks}")
 public interface FeedbackClient {
     @PostMapping
-    FeedbackDto save(FeedbackDto feedbackDto);
+    FeedbackDto save(@RequestBody FeedbackDto feedbackDto);
 
     @GetMapping("/{id}")
     FeedbackDto getById(@PathVariable(name = "id") UUID id);

@@ -69,6 +69,8 @@ public class UserController {
         modelAndView.addObject("user", user);
         modelAndView.addObject("orders",  orderService.getByUser(user.getId()));
         modelAndView.addObject("allCourses", courseService.getAllCourses());
+        modelAndView.addObject("authorsCourses", courseService.getAllByAuthor(user.getId()));
+        modelAndView.addObject("feedbacks", userService.getAllFeedbacksByUserId(user.getId()));
         return modelAndView;
     }
     @PostMapping("/update")
@@ -81,6 +83,7 @@ public class UserController {
         modelAndView.addObject("orders",  orderService.getByUser(user.getId()));
         modelAndView.addObject("allCourses", courseService.getAllCourses());
         modelAndView.addObject("feedbacks", userService.getAllFeedbacksByUserId(user.getId()));
+        modelAndView.addObject("authorsCourses", courseService.getAllByAuthor(user.getId()));
         return modelAndView;
     }
 
@@ -91,9 +94,11 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("account");
         UserDto updated = userService.setWallet(user, sum);
         modelAndView.addObject("user", updated);
+        modelAndView.addObject("authorsCourses", courseService.getAllByAuthor(user.getId()));
         modelAndView.addObject("orders",  orderService.getByUser(user.getId()));
         modelAndView.addObject("allCourses", courseService.getAllCourses());
         modelAndView.addObject("feedbacks", userService.getAllFeedbacksByUserId(user.getId()));
+
         return modelAndView;
     }
 
@@ -101,10 +106,26 @@ public class UserController {
     public ModelAndView feedbackUpdate(@ModelAttribute(name = "feedbackDto") FeedbackDto feedbackDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDto user = userService.findByUsername(authentication.getName());
-        ModelAndView modelAndView = new ModelAndView("account");
         userService.feedbackUpdate(feedbackDto.getId(), feedbackDto);
+        ModelAndView modelAndView = new ModelAndView("account");
         modelAndView.addObject("user", user);
         modelAndView.addObject("orders",  orderService.getByUser(user.getId()));
+        modelAndView.addObject("authorsCourses", courseService.getAllByAuthor(user.getId()));
+        modelAndView.addObject("allCourses", courseService.getAllCourses());
+        modelAndView.addObject("feedbacks", userService.getAllFeedbacksByUserId(user.getId()));
+        return modelAndView;
+
+    }
+
+    @PostMapping("/feedbackSave")
+    public ModelAndView feedbackSave(@ModelAttribute(name = "feedbackSave") FeedbackDto feedback){
+        ModelAndView modelAndView = new ModelAndView("account");
+        userService.feedbackSave(feedback);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDto user = userService.findByUsername(authentication.getName());
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("orders",  orderService.getByUser(user.getId()));
+        modelAndView.addObject("authorsCourses", courseService.getAllByAuthor(user.getId()));
         modelAndView.addObject("allCourses", courseService.getAllCourses());
         modelAndView.addObject("feedbacks", userService.getAllFeedbacksByUserId(user.getId()));
         return modelAndView;
