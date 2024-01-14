@@ -75,12 +75,14 @@ class CourseServiceImplTest {
 
         Mockito.verify(courseRepository, Mockito.times(1)).deleteById(id);
     }
+
     @Test
     public void deleteExc() {
         UUID id = UUID.randomUUID();
 
         Assertions.assertThrows(EntityNotFoundException.class, () -> courseService.deleteCourse(id));
     }
+
     @Test
     public void update1() {
         UUID id = UUID.randomUUID();
@@ -161,7 +163,7 @@ class CourseServiceImplTest {
     }
 
     @Test
-    public void findAllByPriceIs(){
+    public void findAllByPriceIs() {
         Course course1 = new Course();
         Course course2 = new Course();
         course1.setPrice(0.0);
@@ -176,7 +178,7 @@ class CourseServiceImplTest {
     }
 
     @Test
-    public void findAllByComplexity(){
+    public void findAllByComplexity() {
         Course course1 = new Course();
         Course course2 = new Course();
         course1.setComplexity(Complexity.EASY);
@@ -191,7 +193,7 @@ class CourseServiceImplTest {
     }
 
     @Test
-    public void searchIsNull(){
+    public void searchIsNull() {
         Course course1 = new Course();
         Course course2 = new Course();
         List<Course> courses = Arrays.asList(course1, course2);
@@ -202,14 +204,15 @@ class CourseServiceImplTest {
 
         Assertions.assertEquals(2, result.size());
     }
+
     @Test
-    public void search(){
+    public void search() {
         String search = "search";
         Course course1 = new Course();
         Course course2 = new Course();
         List<Course> courses = Arrays.asList(course1, course2);
         Mockito.when(courseRepository
-                .findAllByTitleContainsOrDescriptionContains(search, search))
+                        .findAllByTitleContainsOrDescriptionContains(search, search))
                 .thenReturn(courses);
         Mockito.when(courseMapper.toDtos(courses)).thenCallRealMethod();
 
@@ -218,4 +221,43 @@ class CourseServiceImplTest {
         Assertions.assertEquals(2, result.size());
     }
 
+    @Test
+    public void findByAuthorId() {
+        UUID authorId = UUID.randomUUID();
+        Course course1 = new Course();
+        Course course2 = new Course();
+        course1.setAuthorId(authorId);
+        course2.setAuthorId(authorId);
+        List<Course> courses = Arrays.asList(course1, course2);
+        Mockito.when(courseRepository.findAllByAuthorId(authorId)).thenReturn(courses);
+        Mockito.when(courseMapper.toDtos(courses)).thenCallRealMethod();
+
+        List<CourseDto> result = courseService.findByAuthorId(authorId);
+
+        Assertions.assertEquals(2, result.size());
+    }
+
+    @Test
+    public void findAllByCategory() {
+        UUID id = UUID.randomUUID();
+        Category category = new Category(id, "text");
+        Course course1 = new Course();
+        Course course2 = new Course();
+        course1.setCategory(category);
+        course2.setCategory(category);
+        List<Course> courses = Arrays.asList(course1, course2);
+        Mockito.when(courseRepository.findAllByCategory(category)).thenReturn(courses);
+        Mockito.when(courseMapper.toDtos(courses)).thenCallRealMethod();
+        Mockito.when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
+
+        List<CourseDto> result = courseService.findAllByCategory(category.getId());
+
+        Assertions.assertEquals(2, result.size());
+    }
+
+    @Test
+    public void findAllByCategoryRxc() {
+
+        Assertions.assertThrows(EntityNotFoundException.class, () -> courseService.findAllByCategory(UUID.randomUUID()));
+    }
 }

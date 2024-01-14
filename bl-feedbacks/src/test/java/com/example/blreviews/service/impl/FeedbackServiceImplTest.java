@@ -41,7 +41,9 @@ class FeedbackServiceImplTest {
 
         FeedbackDto result = service.save(feedbackDto);
 
-        Assertions.assertEquals(id, result.getId());
+        Mockito.verify(repository, Mockito.times(1)).save(feedback);
+        Assertions.assertEquals("text", result.getText());
+
     }
 
     @Test

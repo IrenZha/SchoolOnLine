@@ -80,7 +80,13 @@ class LessonServiceImplTest {
         Assertions.assertEquals("text1", result.getText());
 
     }
+    @Test
+    public void updateExc() {
+        UUID id = UUID.randomUUID();
+        LessonDto lessonDto = new LessonDto();
 
+        Assertions.assertThrows(EntityNotFoundException.class, () -> lessonService.update(id,lessonDto));
+    }
     @Test
     public void getAllByCourseId() {
         Lesson lesson1 = new Lesson();

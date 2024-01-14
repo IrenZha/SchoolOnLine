@@ -42,6 +42,8 @@ class UserServiceImplTest {
         Assertions.assertEquals(2, result.size());
     }
 
+
+
     @Test
     public void getRole() {
         String name = "ROLE_USER";
@@ -173,7 +175,14 @@ class UserServiceImplTest {
 
         Assertions.assertNull(result);
     }
+    @Test
+    public void payStudentNotFound() {
+        UUID studentId = UUID.randomUUID();
+        UUID teacherId = UUID.randomUUID();
 
+
+        Assertions.assertThrows(EntityNotFoundException.class, () -> service.pay(studentId, teacherId, 100.0));
+    }
     @Test
     public void payTeacherNotFound() {
         UUID studentId = UUID.randomUUID();
@@ -197,6 +206,22 @@ class UserServiceImplTest {
 
 
         Assertions.assertThrows(NotPaidException.class, () -> service.pay(studentId, teacherId, 100.0));
+    }
+
+    @Test
+    public void pay() {
+        UUID studentId = UUID.randomUUID();
+        UUID teacherId = UUID.randomUUID();
+        User student = new User();
+        student.setWallet(200.0);
+        User teacher = new User();
+        teacher.setWallet(100.0);
+        Mockito.when(userRepository.findById(studentId)).thenReturn(Optional.of(student));
+        Mockito.when(userRepository.findById(teacherId)).thenReturn(Optional.of(teacher));
+
+        boolean pay = service.pay(studentId, teacherId, 100.0);
+
+        Assertions.assertTrue(pay);
     }
 
     @Test

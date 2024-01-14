@@ -36,7 +36,7 @@ class AvatarServiceImplTest {
 
 
     @Test
-   public void testGetFile() throws IOException {
+    public void testGetFile() throws IOException {
         String fileName = "fileName";
         String contentType = "fileType";
         String content = "Hello, World!";
@@ -48,22 +48,24 @@ class AvatarServiceImplTest {
 
         Assertions.assertEquals(content, content);
     }
+
     @Test
     public void testSave() {
         String fileName = "fileName";
         String contentType = "fileType";
         String content = "Hello, World!";
+        Avatar avatar = new Avatar("id", fileName, contentType, content.getBytes());
         MultipartFile file = new MockMultipartFile(fileName, fileName, contentType, content.getBytes());
+        Mockito.when(repository.save(Mockito.any())).thenReturn(avatar);
+        Mockito.when(mapper.toDto(Mockito.any())).thenCallRealMethod();
 
         AvatarDto result = avatarService.save(file);
 
-        Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(Avatar.class));
+        Assertions.assertEquals(fileName, result.getFileName());
     }
 
-
-
     @Test
-   void getAvatar() {
+    void getAvatar() {
         String id = "1";
         Avatar avatar = new Avatar(id, "fileName", "fileType", null);
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(avatar));
@@ -71,19 +73,21 @@ class AvatarServiceImplTest {
 
         AvatarDto result = avatarService.getAvatar(id);
 
-        Assertions.assertEquals(id, avatar.getFileId());
-        Assertions.assertEquals("fileName", avatar.getFileName());
+        Assertions.assertEquals(id, result.getFileId());
+        Assertions.assertEquals("fileName", result.getFileName());
     }
 
+
+
     @Test
-    public void getAvatarExc(){
-       String id = UUID.randomUUID().toString();
+    public void getAvatarExc() {
+        String id = UUID.randomUUID().toString();
 
         Assertions.assertThrows(FileNotFoundException.class, () -> avatarService.getAvatar(id));
     }
 
     @Test
-   public void delete(){
+    public void delete() {
         String id = UUID.randomUUID().toString();
 
         avatarService.delete(id);
